@@ -1,0 +1,39 @@
+import io.gatling.gradle.GatlingRunTask
+
+plugins {
+	id "io.gatling.gradle" version "3.6.1"
+	id "com.diffplug.spotless" version "5.14.2"
+}
+
+group 'io.norio.example'
+version '0.0.1-SNAPSHOT'
+
+gatling {
+	toolVersion = '3.6.1'
+	scalaVersion = '2.13.6'
+	logLevel = 'WARN'
+	logHttp = 'NONE'
+}
+
+spotless {
+	scala {
+		scalafmt()
+	}
+}
+
+// Always run (disable up-to-date check)
+tasks.withType(GatlingRunTask) { outputs.upToDateWhen { false } }
+
+task runMySimulation(dependsOn: [gatlingClasses, gatlingLogback], group: 'my gatling simulation', type: GatlingRunTask){
+	simulations {
+		include 'io/norio/example/gatling/simulations/MySimulation.scala'
+	}
+}
+
+task runFooBarSimulations(dependsOn: [gatlingClasses, gatlingLogback], group: 'my gatling simulation', type: GatlingRunTask){
+	simulations {
+		include 'io/norio/example/gatling/simulations/FooSimulation.scala'
+		include 'io/norio/example/gatling/simulations/BarSimulation.scala'
+	}
+}
+
